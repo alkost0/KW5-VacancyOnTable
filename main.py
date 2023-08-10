@@ -1,38 +1,16 @@
-import psycopg2
-class DBManager:
-def init(self):
-self.connection = None
-self.cursor = None
-def connect_to_db(self, host, port, database, user, password):
-    try:
-        connection = psycopg2.connect(
-            host=host,
-            port=port,
-            database=database,
-            user=user,
-            password=password
-        )
-        self.connection = connection
-        self.cursor = connection.cursor()
-        return True
-    except psycopg2.OperationalError as e:
-        print("Ошибка подключения к базе данных:", e)
-        return False
+import requests
 
-# метод для получения списка всех компаний и количества вакансий у каждой из них
-def get_companies_and_vacancy_count(self):
-    query = "SELECT company_name, COUNT(*) AS vacancy_count FROM vacancies GROUP BY company_name"
-    result = self.cursor.execute(query)
-    companies_and_vacancy_counts = []
-    for row in result:
-        companies_and_vacancy_counts.append({
-            "company_name": row[0],
-            "vacancy_count": row[1]
-        })
-    return companies_and_vacancy_counts
+# Получаем данные о компаниях и вакансиях
+response = requests.get(
+    "https://api.hh.ru/vacancies/search?q=название компании&page=1&per_page=10"
+)
+data = response.json()["items"]
 
-# метод для получения списка всех вакансий с названием компании, названием вакансии и зарплатой и ссылкой на вакансию
-def get_all_vacancies(self, company_id):
-    query = "SELECT * FROM vacancies WHERE company_id = %s"
-    parameters = (company_id,)
-    result = self.cursor.execute(query, parameters)
+for company in data:
+    print(company["name"])
+
+    # Получаем список вакансий для этой компании
+    response = requests.get(f"https://api.hh.ru/vacancies/{company['id']}")
+    data = response.json()
+    for job in data["jobs"]:
+        print(job["title"])
