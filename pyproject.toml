@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "KW5-VacancyOnTable"
+version = "0.1.0"
+description = ""
+authors = ["Alexey Kostenyuk <alexey.kostenyuk@gmail.com>"]
+readme = "README.md"
+packages = [{include = "KW5-VacancyOnTable"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+python-dotenv = "^1.0.0"
+psycopg2 = "^2.9.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
