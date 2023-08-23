@@ -35,6 +35,5 @@ def main():
     print("Список вакансий по ключевому слову: например, Python: ")
     print(bd.get_vacancies_with_keyword("python", all_vacancies))
 
-
 if __name__ == "__main__":
     main()

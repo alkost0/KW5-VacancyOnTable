@@ -1,6 +1,59 @@
 import requests
 import psycopg2
 
+class Api(ABC):
+    """
+    Класс для работы с API сайтов с вакансиями
+    """
+    @abstractmethod
+    def get_vacancies(self, vacancy):
+        pass
+
+class ApiHH(Api):
+    def get_vacancies(self, vacancy):
+        hh_dict = {}
+        for page in range(0, 3):
+            params = {
+                "text": vacancy,
+                "per_page": 100,
+                "page": page,
+            }
+            response = requests.get("https://api.hh.ru/vacancies", params=params).json()
+            hh_dict.update(response)
+        return hh_dict
+
+def get_hh_vacancies_list(raw_hh_data):
+    """
+    Преобразование вакансий из HeadHunter в значения атрибутов экземпляров класса Vacancy
+    :param raw_hh_data:
+    :return:
+    """
+    vacancies = []
+    for raw_hh_vacancy in raw_hh_data:
+        try:
+            title = raw_hh_vacancy['name']
+            url = raw_hh_vacancy['alternate_url']
+            salary = raw_hh_vacancy['salary'].get('from')
+            if raw_hh_vacancy['snippet']['requirement'] is None:
+                requirements = "Описание не указано"
+            else:
+                requirements = raw_hh_vacancy['snippet']['requirement']
+        except AttributeError:
+            title = raw_hh_vacancy['name']
+            url = raw_hh_vacancy['alternate_url']
+            salary = None
+            if raw_hh_vacancy['snippet']['requirement'] is None:
+                requirements = "Описание не указано"
+            else:
+                requirements = raw_hh_vacancy['snippet']['requirement']
+        validate_salary = Vacancy.validate_salary(salary)
+        validate_requirements = Vacancy.validate_requirements(requirements)
+        hh_vacancy = Vacancy(title, url, validate_salary, validate_requirements)
+        vacancies.append(hh_vacancy)
+    return vacancies
+
+
+
 class DBManager:
     """
     Класс для работы с данными в PostgreSQL
