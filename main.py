@@ -1,4 +1,7 @@
-from utils import DBManager, get_employers, get_employer_vacancies, create_database, create_table_employer, insert_table_data
+from src.utils import get_employers, get_employer_vacancies
+from src.database_utils import create_database, create_table_employer, insert_table_data
+from src.manager import DBManager
+from src.config import config
 
 def main():
     db_name = "vacancy_hh"
