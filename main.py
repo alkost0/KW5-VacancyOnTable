@@ -3,7 +3,12 @@ from src.database_utils import create_database, create_table_employer, insert_ta
 from src.manager import DBManager
 from src.config import config
 
+
 def main():
+    """
+    Главная функция работы с вакансиями с сайта поиска работы hh.ru (HeadHunter.ru) и записью выборок в БД на Postgre
+    Показаны выводами на экран основные взаимодействия с пользователем
+    """
     db_name = "vacancy_hh"
     params = config()
 
@@ -11,7 +16,8 @@ def main():
     print(f"БД {db_name} успешно создана")
 
     params.update({'dbname': db_name})
-    names_employers = ["Газпромбанк", "skyeng", "Открытие", "Яндекс", "GMS", "Росатом", "Тинькофф", "VK", "ВТБ", "Сбертех"]
+    names_employers = ["Газпромбанк", "skyeng", "Открытие", "Яндекс", "GMS", "Росатом", "Тинькофф", "VK", "ВТБ",
+                       "Сбертех"]
     employers = get_employers(names_employers)
     create_table_employer(params, employers)
     print("Таблицы успешно созданы")
@@ -37,6 +43,7 @@ def main():
     print()
     print("Список вакансий по ключевому слову: например, Python: ")
     print(bd.get_vacancies_with_keyword("python", all_vacancies))
+
 
 if __name__ == "__main__":
     main()
